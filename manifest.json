@@ -1,0 +1,15 @@
+{
+    "name": "Qiita拡張[非公式]",
+    "description": "Qiitaにちょっぴり機能を追加します",
+    "version": "0.1.0",
+    "manifest_version": 3,
+    "icons": {
+        "16": "icon-16.png"
+    },
+    "permissions": [
+        "contextMenus"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    }
+}
