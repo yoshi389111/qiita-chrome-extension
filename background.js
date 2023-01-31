@@ -66,6 +66,7 @@ chrome.runtime.onInstalled.addListener(() => {
         type: 'normal',
         id: 'userArticles',
         title: 'このユーザーの記事（いいね順）',
+        contexts: [ 'page', 'link' ],
         documentUrlPatterns: [
             '*://qiita.com/*'
         ]
@@ -83,7 +84,7 @@ chrome.contextMenus.onClicked.addListener((item, tab) => {
         url.searchParams.set('sort', 'created');
         url.searchParams.set('q', 'created:' + calcPastDate(num));
     } else if (item.menuItemId === 'userArticles') {
-        const user = extractUserName(tab.url);
+        const user = extractUserName(item.linkUrl || item.pageUrl);
         url.searchParams.set('sort', 'like'); // いいね順
         url.searchParams.set('q', `user:${user}`);
     } else {
