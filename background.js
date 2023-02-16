@@ -61,12 +61,32 @@ chrome.runtime.onInstalled.addListener(() => {
             parentId: 'dailyArticles'
         });
     });
+    chrome.contextMenus.create({
+        type: 'separator',
+        id: `separator`,
+        title: `セパレータ`,
+        parentId: 'dailyArticles'
+    });
+    chrome.contextMenus.create({
+        type: 'normal',
+        id: `randamAgoArticles`,
+        title: `ランダム過去日の新着一覧`,
+        parentId: 'dailyArticles'
+    });
     // ユーザーの記事（いいね順）
     chrome.contextMenus.create({
         type: 'normal',
         id: 'userArticles',
         title: 'このユーザーの記事（いいね順）',
         contexts: [ 'page', 'link' ],
+        documentUrlPatterns: [
+            '*://qiita.com/*'
+        ]
+    });
+    chrome.contextMenus.create({
+        type: 'normal',
+        id: 'discussions',
+        title: 'ディスカッション',
         documentUrlPatterns: [
             '*://qiita.com/*'
         ]
@@ -87,6 +107,19 @@ chrome.contextMenus.onClicked.addListener((item, tab) => {
         const user = extractUserName(item.linkUrl || item.pageUrl);
         url.searchParams.set('sort', 'like'); // いいね順
         url.searchParams.set('q', `user:${user}`);
+    } else if (item.menuItemId.endsWith('randamAgoArticles')) {
+        const diffSecond = new Date().getTime() - new Date(2011, 9-1, 16).getTime();
+        const diffDay = Math.trunc(diffSecond / (1000 * 60 * 60 * 24));
+        // Qiitaの始めの日から30日前までのどこかの日をランダムで決める
+        const random = Math.trunc(Math.random() * (diffDay - 30)) + 30;
+        url.searchParams.set('sort', 'created');
+        url.searchParams.set('q', 'created:' + calcPastDate(random));
+    } else if (item.menuItemId === 'discussions') {
+        chrome.tabs.create({
+            url: 'https://github.com/increments/qiita-discussions/discussions',
+            index: tab.index + 1
+        });
+        return;
     } else {
         return;
     }
