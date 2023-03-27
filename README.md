@@ -1,4 +1,4 @@
-# qiita-chrome-extention
+# qiita-chrome-extension
 
 Qiita 用の chrome 拡張機能(非公式)です。
 
